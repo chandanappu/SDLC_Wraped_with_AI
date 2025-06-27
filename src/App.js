@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineClipboardList } from "react-icons/hi";
 import { FiSettings } from "react-icons/fi";
 import { FiArrowLeft } from "react-icons/fi";
+import { evaluate } from 'mathjs';
 import "./App.css";
 
 export default function App() {
@@ -96,7 +97,8 @@ function CalculatorScreen({
         return;
       }
       try {
-        const result = eval(input.replace(/÷/g, "/").replace(/×/g, "*"));
+        const safeInput = input.replace("÷", "/").replace("×", "*");
+        const result = evaluate(safeInput);
         const rounded = Number.isFinite(result) ? Number(result.toFixed(6)) : result;
         const full = `${input} = ${rounded}`;
         setInput(String(rounded));  // Start fresh from result
