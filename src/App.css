@@ -15,6 +15,30 @@ body, html {
   color: #fff;
 }
 
+
+.calculator button {
+  background-color: #267cf3;
+  color: #fff;
+}
+
+.app-container.dark .calculator button {
+  background-color: #444; /* Or a dark-friendly color */
+  color: #fff;
+}
+
+.calculator .display {
+  background-color: #fff;
+  color: #000;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.app-container.dark .calculator .display {
+  background-color: #222;
+  color: #fff;
+}
+
+
 .app-container {
   min-height: 100vh;
   padding: 20px;

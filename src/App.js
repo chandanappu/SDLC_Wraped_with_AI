@@ -136,10 +136,10 @@ function CalculatorScreen({
         <h1>SimpelCalc</h1>
         <div className="nav-buttons">
           <button onClick={() => onNavigate("history")} className="nav-icon">
-            <HiOutlineClipboardList size={24} color="#267cf3" />
+            <HiOutlineClipboardList size={24}  />
           </button>
           <button onClick={() => onNavigate("settings")} className="nav-icon">
-            <FiSettings size={24} color="#267cf3" />
+            <FiSettings size={24}  />
           </button>
         </div>
       </div>
