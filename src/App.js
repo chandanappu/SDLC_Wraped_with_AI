@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineClipboardList } from "react-icons/hi";
-import { FiSettings } from "react-icons/fi";
-import { FiArrowLeft } from "react-icons/fi";
-import { evaluate } from 'mathjs';
+import { FiSettings, FiArrowLeft } from "react-icons/fi";
+import { evaluate } from "mathjs";
 import "./App.css";
 
 export default function App() {
   const [screen, setScreen] = useState("calculator");
   const [theme, setTheme] = useState("light");
-  const [fontSize, setFontSize] = useState(24); // Default font size
+  const [fontSize, setFontSize] = useState(24);
   const [history, setHistory] = useState(() => {
     const saved = localStorage.getItem("calc-history");
     return saved ? JSON.parse(saved) : [];
@@ -73,6 +72,7 @@ function CalculatorScreen({
   fontSize,
 }) {
   const [input, setInput] = useState("");
+  const [lastWasResult, setLastWasResult] = useState(false);
 
   const playSound = () => {
     if (soundEnabled) {
@@ -85,43 +85,50 @@ function CalculatorScreen({
       });
     }
   };
-  
 
   const handleClick = (value) => {
     playSound();
+
     if (value === "C") {
       setInput("");
-    } else if (value === "=") {
+      setLastWasResult(false);
+      return;
+    }
+
+    if (value === "=") {
       if (!input || /[+\-×÷.]$/.test(input)) {
         setInput("Error");
+        setLastWasResult(false);
         return;
       }
       try {
-        const safeInput = input.replace("÷", "/").replace("×", "*");
+        const safeInput = input.replace(/÷/g, "/").replace(/×/g, "*");
         const result = evaluate(safeInput);
         const rounded = Number.isFinite(result) ? Number(result.toFixed(6)) : result;
         const full = `${input} = ${rounded}`;
-        setInput(String(rounded));  // Start fresh from result
+        setInput(String(rounded));
         setHistory([full, ...history]);
+        setLastWasResult(true);
       } catch {
         setInput("Error");
+        setLastWasResult(false);
       }
-    } else {
-      // If previous input was a result (number only), and user presses operator -> continue
-      if (/^[0-9.]+$/.test(input) && /[+\-×÷]/.test(value)) {
+      return;
+    }
+
+    if (lastWasResult) {
+      if (/[0-9.]/.test(value)) {
+        // Start fresh with digit/dot
+        setInput(value);
+      } else {
+        // Continue from result with operator
         setInput(input + value);
       }
-      // If previous input was result and user presses digit -> start new
-      else if (/^[0-9.]+$/.test(input) && /[0-9.]/.test(value)) {
-        setInput(value);
-      } 
-      else {
-        setInput(prev => prev + value);
-      }
+      setLastWasResult(false);
+    } else {
+      setInput((prev) => prev + value);
     }
   };
-  
-  
 
   return (
     <div className="calculator">
@@ -140,7 +147,7 @@ function CalculatorScreen({
         {input}
       </div>
       <div className="keypad grid grid-cols-4 gap-2 p-2">
-        {["7", "8", "9", "÷", "4", "5", "6", "×", "1", "2", "3", "-", "0",".", "C", "+", "="].map(
+        {["7", "8", "9", "÷", "4", "5", "6", "×", "1", "2", "3", "-", "0", ".", "C", "+", "="].map(
           (btn) => (
             <button
               key={btn}
@@ -166,7 +173,7 @@ function HistoryScreen({ onBack, history, setHistory }) {
             Clear History
           </button>
           <button onClick={onBack} className="back-btn">
-          <FiArrowLeft size={20} />
+            <FiArrowLeft size={20} />
           </button>
         </div>
       </div>
