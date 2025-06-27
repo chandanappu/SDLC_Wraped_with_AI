@@ -71,3 +71,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 # SDLC_WRAPED_AI_CALCULATOR
 # SDLC_WRAPED_AI_CALCULATOR
 # SDLC_WRAPED_AI_CALCULATOR
+# SDLC_Wraped_with_AI
